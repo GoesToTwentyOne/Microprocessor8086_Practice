@@ -1,0 +1,70 @@
+.MODEL SMALL
+.STACK 100H
+.DATA  
+    NUM1 DW ?
+    NUM2 DW ?
+    NUM3 DW ?
+    MSG_LESS DB 'The smallest number is: $'
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H
+    MOV NUM1, AX
+
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H
+    MOV NUM2, AX
+
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H
+    MOV NUM3, AX
+
+    MOV AX, NUM1
+    CMP AX, NUM2
+    JNE CHECK_NUM1_NUM2_NOT_EQUAL
+
+    CMP AX, NUM3
+    JMP NUM1_LESS
+
+CHECK_NUM1_NUM2_NOT_EQUAL:
+    CMP AX, NUM3
+    JL NUM1_LESS
+    JMP NUM3_LESS
+
+NUM1_LESS:
+    MOV DX, OFFSET MSG_LESS
+    MOV AH, 9
+    INT 21H
+    MOV AX, NUM1
+    ADD AL, '0'
+    MOV DL, AL
+    MOV AH, 2
+    INT 21H
+    JMP END_PROGRAM
+
+NUM3_LESS:
+    MOV DX, OFFSET MSG_LESS
+    MOV AH, 9
+    INT 21H
+    MOV AX, NUM3
+    ADD AL, '0'
+    MOV DL, AL
+    MOV AH, 2
+    INT 21H
+    JMP END_PROGRAM
+
+
+
+END_PROGRAM:
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+END MAIN
